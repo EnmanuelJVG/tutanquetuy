@@ -1,6 +1,6 @@
-# Tanque Tuy — Catálogo web
+# TanqueTuy — Catálogo web
 
-Sitio estático responsive inspirado en el branding y los flyers suministrados. Está preparado para verse primero en teléfonos y para dirigir cada consulta a WhatsApp.
+Sitio estático responsive adaptado al logotipo negro y blanco de TanqueTuy y a los flyers suministrados. Está preparado para verse primero en teléfonos y para dirigir cada consulta a WhatsApp.
 
 ## Qué incluye
 - Catálogo filtrable: modelos cónicos y cilíndricos.
@@ -8,13 +8,14 @@ Sitio estático responsive inspirado en el branding y los flyers suministrados. 
 - Selector de asesor: el cliente puede elegir entre Adolfo y Ailan antes de abrir WhatsApp.
 - Los botones del catálogo conservan el modelo elegido dentro del mensaje precargado.
 - Botón fijo para WhatsApp en teléfonos, navegación móvil, animaciones de entrada y movimiento suave.
+- Identidad visual monocromática en negro, blanco y grises; el logotipo suministrado está en `assets/logo.png`.
 - Secciones de garantía, envío, pagos, ubicación y contacto. No se afirma un material específico.
 - Sin precios inventados ni backend; funciona como web estática.
 - Ilustraciones vectoriales de referencia para ambos tipos de tanque; los flyers entregados se conservan en `referencias-branding/` y `assets/flyers/`.
 
 ## Ver la web en tu computadora
 1. Descomprime el archivo ZIP.
-2. Abre la carpeta `tanque-tuy-catalogo`.
+2. Abre la carpeta `tanquetuy-catalogo`.
 3. Abre `index.html` en Chrome, Edge o Firefox. El catálogo y los filtros funcionan localmente; los enlaces de WhatsApp necesitan internet.
 
 ## Cambiar los contactos de WhatsApp

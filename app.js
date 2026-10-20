@@ -5,8 +5,8 @@
  * Edita los nombres y números aquí si el cliente necesita actualizarlos.
  */
 const CONTACTS = [
-  { id: "adolfo", name: "Ailan", phoneDigits: "584129775362", phoneDisplay: "0412-9775362" },
-  { id: "ailan", name: "Adolfo", phoneDigits: "584241253309", phoneDisplay: "0424-1253309" }
+  { id: "adolfo", name: "Adolfo", phoneDigits: "584129775362", phoneDisplay: "0412-9775362" },
+  { id: "ailan", name: "Ailan", phoneDigits: "584241253309", phoneDisplay: "0424-1253309" }
 ];
 
 const products = [
@@ -35,7 +35,7 @@ function specsMarkup(product) {
 function productMarkup(product, index) {
   const img = product.type === "conico" ? "tank-conico.svg" : "tank-cilindrico.svg";
   const imgAlt = product.type === "conico" ? "Ilustración de un tanque cónico" : "Ilustración de un tanque cilíndrico";
-  const msg = `Hola, Tanque Tuy. Quiero consultar precio, disponibilidad y entrega del tanque ${product.kind.toLowerCase()} de ${product.liters.toLocaleString("es-VE")} litros.`;
+  const msg = `Hola, TanqueTuy. Quiero consultar precio, disponibilidad y entrega del tanque ${product.kind.toLowerCase()} de ${product.liters.toLocaleString("es-VE")} litros.`;
   return `<article class="product-card" style="animation-delay:${Math.min(index*55,280)}ms">
     <div class="product-art"><div class="art-glow"></div><span class="product-type">Línea ${product.kind}</span><img src="assets/${img}" alt="${imgAlt}" loading="lazy"></div>
     <div class="product-body">
@@ -77,7 +77,7 @@ renderProducts();
 const contactPicker = document.querySelector("#contactPickerModal");
 const contactPickerOptions = document.querySelector("#contactPickerOptions");
 const contactPickerClose = document.querySelector("#contactPickerClose");
-let pendingWhatsAppMessage = "Hola, Tanque Tuy. Quiero información sobre sus tanques.";
+let pendingWhatsAppMessage = "Hola, TanqueTuy. Quiero información sobre sus tanques.";
 let previousFocus = null;
 
 contactPickerOptions.innerHTML = CONTACTS.map(contact => `
@@ -89,7 +89,7 @@ contactPickerOptions.innerHTML = CONTACTS.map(contact => `
 `).join("");
 
 function openContactPicker(message) {
-  pendingWhatsAppMessage = message || "Hola, Tanque Tuy. Quiero información sobre sus tanques.";
+  pendingWhatsAppMessage = message || "Hola, TanqueTuy. Quiero información sobre sus tanques.";
   previousFocus = document.activeElement;
   contactPicker.hidden = false;
   contactPicker.setAttribute("aria-hidden", "false");
