@@ -1,6 +1,13 @@
-/* Configuración rápida: este es el único número que debes actualizar si el contacto cambia. */
-const BUSINESS_PHONE_DIGITS = "584129775362"; // País +58, sin el 0 inicial
-const BUSINESS_PHONE_DISPLAY = "0412-9775362";
+/*
+ * CONTACTOS DE WHATSAPP
+ * Puedes cambiar los nombres y números desde este único bloque.
+ * Escribe los números en formato internacional, solo dígitos y sin el +.
+ * Edita los nombres y números aquí si el cliente necesita actualizarlos.
+ */
+const CONTACTS = [
+  { id: "adolfo", name: "Adolfo", phoneDigits: "584129775362", phoneDisplay: "0412-9775362" },
+  { id: "ailan", name: "Ailan", phoneDigits: "584241253309", phoneDisplay: "0424-1253309" }
+];
 
 const products = [
   { id:"conico-1000", type:"conico", kind:"Cónico", liters:1000, title:"Cónico 1.000 L", dimensions:null, description:"Formato compacto para espacios optimizados." },
@@ -17,8 +24,8 @@ const search = document.querySelector("#modelSearch");
 const filterButtons = [...document.querySelectorAll(".filter-chip")];
 let activeFilter = "todos";
 
-function makeWhatsAppLink(message) {
-  return `https://wa.me/${BUSINESS_PHONE_DIGITS}?text=${encodeURIComponent(message)}`;
+function makeWhatsAppLink(phoneDigits, message) {
+  return `https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`;
 }
 function specsMarkup(product) {
   if (!product.dimensions) return `<div class="specs no-specs">Medidas disponibles por consulta. Escríbenos y te orientamos.</div>`;
@@ -28,14 +35,14 @@ function specsMarkup(product) {
 function productMarkup(product, index) {
   const img = product.type === "conico" ? "tank-conico.svg" : "tank-cilindrico.svg";
   const imgAlt = product.type === "conico" ? "Ilustración de un tanque cónico" : "Ilustración de un tanque cilíndrico";
-  const msg = `Hola, Tu Tanque Tuy. Quiero consultar precio, disponibilidad y entrega del tanque ${product.kind.toLowerCase()} de ${product.liters.toLocaleString("es-VE")} litros.`;
+  const msg = `Hola, Tanque Tuy. Quiero consultar precio, disponibilidad y entrega del tanque ${product.kind.toLowerCase()} de ${product.liters.toLocaleString("es-VE")} litros.`;
   return `<article class="product-card" style="animation-delay:${Math.min(index*55,280)}ms">
     <div class="product-art"><div class="art-glow"></div><span class="product-type">Línea ${product.kind}</span><img src="assets/${img}" alt="${imgAlt}" loading="lazy"></div>
     <div class="product-body">
       <div class="product-title-row"><div><h3 class="product-title">${product.title}</h3><p class="product-subtitle">${product.description}</p></div><span class="volume-mark">${product.liters.toLocaleString("es-VE")} L</span></div>
       ${specsMarkup(product)}
       <div class="product-meta"><span class="meta-dot"></span> Consulta precio y disponibilidad</div>
-      <a class="product-cta" href="${makeWhatsAppLink(msg)}" target="_blank" rel="noopener noreferrer"><span>Consultar este modelo</span><span aria-hidden="true">→</span></a>
+      <a class="product-cta js-whatsapp" data-message="${msg}" href="#contacto"><span>Consultar este modelo</span><span aria-hidden="true">→</span></a>
     </div>
   </article>`;
 }
@@ -66,15 +73,67 @@ filterButtons.forEach(button => button.addEventListener("click", () => {
 search.addEventListener("input", renderProducts);
 renderProducts();
 
-// Configure WhatsApp destinations from the phone number above for all CTAs.
-document.querySelectorAll(".js-whatsapp").forEach(link => {
-  const message = link.dataset.message || "Hola, Tu Tanque Tuy. Quiero información sobre sus tanques.";
-  link.href = makeWhatsAppLink(message);
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
+// Selector de asesor: conserva el mensaje contextual (incluido el modelo seleccionado).
+const contactPicker = document.querySelector("#contactPickerModal");
+const contactPickerOptions = document.querySelector("#contactPickerOptions");
+const contactPickerClose = document.querySelector("#contactPickerClose");
+let pendingWhatsAppMessage = "Hola, Tanque Tuy. Quiero información sobre sus tanques.";
+let previousFocus = null;
+
+contactPickerOptions.innerHTML = CONTACTS.map(contact => `
+  <button type="button" class="contact-option" data-contact-id="${contact.id}">
+    <span class="contact-option-avatar" aria-hidden="true">${contact.name.charAt(0).toLocaleUpperCase("es")}</span>
+    <span class="contact-option-copy"><strong>Hablar con ${contact.name}</strong><small>${contact.phoneDisplay}</small></span>
+    <span class="contact-option-arrow" aria-hidden="true">↗</span>
+  </button>
+`).join("");
+
+function openContactPicker(message) {
+  pendingWhatsAppMessage = message || "Hola, Tanque Tuy. Quiero información sobre sus tanques.";
+  previousFocus = document.activeElement;
+  contactPicker.hidden = false;
+  contactPicker.setAttribute("aria-hidden", "false");
+  document.body.classList.add("contact-picker-open");
+  requestAnimationFrame(() => {
+    contactPicker.classList.add("is-open");
+    contactPickerClose.focus();
+  });
+}
+function closeContactPicker() {
+  contactPicker.classList.remove("is-open");
+  contactPicker.setAttribute("aria-hidden", "true");
+  contactPicker.hidden = true;
+  document.body.classList.remove("contact-picker-open");
+  if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
+}
+
+document.addEventListener("click", event => {
+  const trigger = event.target.closest(".js-whatsapp, .js-contact-picker");
+  if (trigger) {
+    event.preventDefault();
+    openContactPicker(trigger.dataset.message);
+    return;
+  }
+
+  const closeTrigger = event.target.closest("[data-close-contact-picker]");
+  if (closeTrigger) {
+    closeContactPicker();
+    return;
+  }
+
+  const contactOption = event.target.closest("[data-contact-id]");
+  if (contactOption && contactPicker.contains(contactOption)) {
+    const contact = CONTACTS.find(item => item.id === contactOption.dataset.contactId);
+    if (!contact) return;
+    const url = makeWhatsAppLink(contact.phoneDigits, pendingWhatsAppMessage);
+    closeContactPicker();
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
 });
-const phoneDisplay = document.querySelector("#phoneDisplay");
-if (phoneDisplay) { phoneDisplay.textContent = BUSINESS_PHONE_DISPLAY; phoneDisplay.href = `tel:+${BUSINESS_PHONE_DIGITS}`; }
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !contactPicker.hidden) closeContactPicker();
+});
 
 // Mobile navigation
 const menuToggle = document.querySelector("#menuToggle");
