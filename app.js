@@ -5,8 +5,8 @@
  * Edita los nombres y números aquí si el cliente necesita actualizarlos.
  */
 const CONTACTS = [
-  { id: "adolfo", name: "Adolfo", phoneDigits: "584129775362", phoneDisplay: "0412-9775362" },
-  { id: "ailan", name: "Ailan", phoneDigits: "584241253309", phoneDisplay: "0424-1253309" }
+  { id: "adolfo", name: "Ailan", phoneDigits: "584129775362", phoneDisplay: "0412-9775362" },
+  { id: "ailan", name: "Adolfo", phoneDigits: "584241253309", phoneDisplay: "0424-1253309" }
 ];
 
 const products = [
